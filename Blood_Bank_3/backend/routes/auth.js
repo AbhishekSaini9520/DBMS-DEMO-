@@ -8,4 +8,8 @@ const {validateUserRegistration, validateLogin} = require('../middleware/validat
 router.post('/signup', validateUserRegistration, registerUser);
 router.post('/login', validateLogin, loginUser);
 
+// Protected routes
+router.get('/profile', authenticateToken, getUserProfile);
+router.put('/profile', authenticateToken, updateUserProfile);
+
 module.exports = router;

@@ -26,7 +26,7 @@ import HospitalManagement from './Pages/HospitalManagement.jsx'
 import AddInventory from './Pages/AddInventory.jsx'
 import RecordDonation from './Pages/RecordDonation.jsx'
 import DonorBloodDonation from './Pages/DonorBloodDonation.jsx'
-import AdminPanel from './components/AdminPanel'
+// import AdminPanel from './components/AdminPanel'
 
 function App() {
   return (
