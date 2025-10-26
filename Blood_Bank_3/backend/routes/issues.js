@@ -7,7 +7,7 @@ const {
   createIssue,
   getHospitalIssues,
   getIssueStats,
-  getIssuesByDateRange
+  // getIssuesByDateRange
 } = require('../controllers/issueController');
 const {
   validateBloodIssue
@@ -19,7 +19,7 @@ router.get('/', authenticateToken, getAllIssues);
 router.get('/stats', authenticateToken, getIssueStats);
 router.get('/:issueId', authenticateToken, getIssueById);
 router.get('/request/:requestId', authenticateToken, getIssuesByRequest);
-router.get('/date-range', authenticateToken, getIssuesByDateRange);
+// router.get('/date-range', authenticateToken, getIssuesByDateRange);
 
 // Hospital-specific routes
 router.get('/hospital/issues', authenticateToken, authorizeHospital, getHospitalIssues);

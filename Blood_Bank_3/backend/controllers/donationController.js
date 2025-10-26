@@ -220,119 +220,119 @@ const createDonation = async (req, res) => {
 };
 
 // Update donation status
-const updateDonationStatus = async (req, res) => {
-  try {
-    const { donationId } = req.params;
-    const { status } = req.body;
-    const userId = req.user.id;
+// const updateDonationStatus = async (req, res) => {
+//   try {
+//     const { donationId } = req.params;
+//     const { status } = req.body;
+//     const userId = req.user.id;
 
-    // Check if donation exists and belongs to current user's hospital
-    const [donations] = await pool.execute(`
-      SELECT bd.*, h.user_id as hospital_user_id
-      FROM blood_donations bd
-      JOIN hospitals h ON bd.hospital_id = h.id
-      WHERE bd.id = ?
-    `, [donationId]);
+//     // Check if donation exists and belongs to current user's hospital
+//     const [donations] = await pool.execute(`
+//       SELECT bd.*, h.user_id as hospital_user_id
+//       FROM blood_donations bd
+//       JOIN hospitals h ON bd.hospital_id = h.id
+//       WHERE bd.id = ?
+//     `, [donationId]);
 
-    if (donations.length === 0) {
-      return res.status(404).json({
-        success: false,
-        message: 'Donation not found'
-      });
-    }
+//     if (donations.length === 0) {
+//       return res.status(404).json({
+//         success: false,
+//         message: 'Donation not found'
+//       });
+//     }
 
-    if (donations[0].hospital_user_id !== userId && req.user.role !== 'admin') {
-      return res.status(403).json({
-        success: false,
-        message: 'Access denied'
-      });
-    }
+//     if (donations[0].hospital_user_id !== userId && req.user.role !== 'admin') {
+//       return res.status(403).json({
+//         success: false,
+//         message: 'Access denied'
+//       });
+//     }
 
-    // Update donation status
-    await pool.execute(
-      'UPDATE blood_donations SET status = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?',
-      [status, donationId]
-    );
+//     // Update donation status
+//     await pool.execute(
+//       'UPDATE blood_donations SET status = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?',
+//       [status, donationId]
+//     );
 
-    res.json({
-      success: true,
-      message: 'Donation status updated successfully'
-    });
-  } catch (error) {
-    console.error('Update donation status error:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Internal server error'
-    });
-  }
-};
+//     res.json({
+//       success: true,
+//       message: 'Donation status updated successfully'
+//     });
+//   } catch (error) {
+//     console.error('Update donation status error:', error);
+//     res.status(500).json({
+//       success: false,
+//       message: 'Internal server error'
+//     });
+//   }
+// };
 
 // Update donation
-const updateDonation = async (req, res) => {
-  try {
-    const { donationId } = req.params;
-    const donationData = req.body;
-    const userId = req.user.id;
+// const updateDonation = async (req, res) => {
+//   try {
+//     const { donationId } = req.params;
+//     const donationData = req.body;
+//     const userId = req.user.id;
 
-    // Check if donation exists and belongs to current user's hospital
-    const [donations] = await pool.execute(`
-      SELECT bd.*, h.user_id as hospital_user_id
-      FROM blood_donations bd
-      JOIN hospitals h ON bd.hospital_id = h.id
-      WHERE bd.id = ?
-    `, [donationId]);
+//     // Check if donation exists and belongs to current user's hospital
+//     const [donations] = await pool.execute(`
+//       SELECT bd.*, h.user_id as hospital_user_id
+//       FROM blood_donations bd
+//       JOIN hospitals h ON bd.hospital_id = h.id
+//       WHERE bd.id = ?
+//     `, [donationId]);
 
-    if (donations.length === 0) {
-      return res.status(404).json({
-        success: false,
-        message: 'Donation not found'
-      });
-    }
+//     if (donations.length === 0) {
+//       return res.status(404).json({
+//         success: false,
+//         message: 'Donation not found'
+//       });
+//     }
 
-    if (donations[0].hospital_user_id !== userId && req.user.role !== 'admin') {
-      return res.status(403).json({
-        success: false,
-        message: 'Access denied'
-      });
-    }
+//     if (donations[0].hospital_user_id !== userId && req.user.role !== 'admin') {
+//       return res.status(403).json({
+//         success: false,
+//         message: 'Access denied'
+//       });
+//     }
 
-    // Update donation
-    const updateFields = [];
-    const updateValues = [];
+//     // Update donation
+//     const updateFields = [];
+//     const updateValues = [];
 
-    Object.keys(donationData).forEach(key => {
-      if (donationData[key] !== undefined && donationData[key] !== null) {
-        updateFields.push(`${key} = ?`);
-        updateValues.push(donationData[key]);
-      }
-    });
+//     Object.keys(donationData).forEach(key => {
+//       if (donationData[key] !== undefined && donationData[key] !== null) {
+//         updateFields.push(`${key} = ?`);
+//         updateValues.push(donationData[key]);
+//       }
+//     });
 
-    if (updateFields.length === 0) {
-      return res.status(400).json({
-        success: false,
-        message: 'No fields to update'
-      });
-    }
+//     if (updateFields.length === 0) {
+//       return res.status(400).json({
+//         success: false,
+//         message: 'No fields to update'
+//       });
+//     }
 
-    updateValues.push(donationId);
+//     updateValues.push(donationId);
 
-    await pool.execute(
-      `UPDATE blood_donations SET ${updateFields.join(', ')}, updated_at = CURRENT_TIMESTAMP WHERE id = ?`,
-      updateValues
-    );
+//     await pool.execute(
+//       `UPDATE blood_donations SET ${updateFields.join(', ')}, updated_at = CURRENT_TIMESTAMP WHERE id = ?`,
+//       updateValues
+//     );
 
-    res.json({
-      success: true,
-      message: 'Donation updated successfully'
-    });
-  } catch (error) {
-    console.error('Update donation error:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Internal server error'
-    });
-  }
-};
+//     res.json({
+//       success: true,
+//       message: 'Donation updated successfully'
+//     });
+//   } catch (error) {
+//     console.error('Update donation error:', error);
+//     res.status(500).json({
+//       success: false,
+//       message: 'Internal server error'
+//     });
+//   }
+// };
 
 // Get pending donations
 const getPendingDonations = async (req, res) => {
@@ -425,8 +425,8 @@ module.exports = {
   getDonationsByDonor,
   createDonationRequest,
   createDonation,
-  updateDonationStatus,
-  updateDonation,
+  // updateDonationStatus,
+  // updateDonation,
   getPendingDonations,
   getDonationStats
 };

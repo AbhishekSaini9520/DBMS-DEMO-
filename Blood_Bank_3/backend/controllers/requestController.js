@@ -302,48 +302,48 @@ const updateRequest = async (req, res) => {
 };
 
 // Delete request
-const deleteRequest = async (req, res) => {
-  try {
-    const { requestId } = req.params;
-    const userId = req.user.id;
+// const deleteRequest = async (req, res) => {
+//   try {
+//     const { requestId } = req.params;
+//     const userId = req.user.id;
 
-    // Check if request exists and belongs to current user's patient
-    const [requests] = await pool.execute(`
-      SELECT br.*, p.user_id as patient_user_id
-      FROM blood_requests br
-      JOIN patients p ON br.patient_id = p.id
-      WHERE br.id = ?
-    `, [requestId]);
+//     // Check if request exists and belongs to current user's patient
+//     const [requests] = await pool.execute(`
+//       SELECT br.*, p.user_id as patient_user_id
+//       FROM blood_requests br
+//       JOIN patients p ON br.patient_id = p.id
+//       WHERE br.id = ?
+//     `, [requestId]);
 
-    if (requests.length === 0) {
-      return res.status(404).json({
-        success: false,
-        message: 'Request not found'
-      });
-    }
+//     if (requests.length === 0) {
+//       return res.status(404).json({
+//         success: false,
+//         message: 'Request not found'
+//       });
+//     }
 
-    if (requests[0].patient_user_id !== userId && req.user.role !== 'admin') {
-      return res.status(403).json({
-        success: false,
-        message: 'Access denied'
-      });
-    }
+//     if (requests[0].patient_user_id !== userId && req.user.role !== 'admin') {
+//       return res.status(403).json({
+//         success: false,
+//         message: 'Access denied'
+//       });
+//     }
 
-    // Delete request
-    await pool.execute('DELETE FROM blood_requests WHERE id = ?', [requestId]);
+//     // Delete request
+//     await pool.execute('DELETE FROM blood_requests WHERE id = ?', [requestId]);
 
-    res.json({
-      success: true,
-      message: 'Request deleted successfully'
-    });
-  } catch (error) {
-    console.error('Delete request error:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Internal server error'
-    });
-  }
-};
+//     res.json({
+//       success: true,
+//       message: 'Request deleted successfully'
+//     });
+//   } catch (error) {
+//     console.error('Delete request error:', error);
+//     res.status(500).json({
+//       success: false,
+//       message: 'Internal server error'
+//     });
+//   }
+// };
 
 // Get pending requests
 const getPendingRequests = async (req, res) => {
@@ -463,7 +463,7 @@ module.exports = {
   createRequest,
   updateRequestStatus,
   updateRequest,
-  deleteRequest,
+  // deleteRequest,
   getPendingRequests,
   getRequestStats
 };

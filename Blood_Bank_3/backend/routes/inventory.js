@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const {  getAllInventory,  getAvailableBlood,  getBloodByGroup,  addBloodToInventory,  updateInventory,  getHospitalInventory,  getInventoryStats,  checkBloodAvailability} = require('../controllers/inventoryController');
+const {  getAllInventory,  getAvailableBlood,  getBloodByGroup,  addBloodToInventory,  getHospitalInventory,  getInventoryStats,  checkBloodAvailability} = require('../controllers/inventoryController');
 const { authenticateToken, authorizeHospital } = require('../middleware/auth');
 
 // Public routes

@@ -153,84 +153,84 @@ const createHospital = async (req, res) => {
 };
 
 // Update hospital profile
-const updateHospital = async (req, res) => {
-  try {
-    const { hospitalId } = req.params;
-    const hospitalData = req.body;
-    const userId = req.user.id;
+// const updateHospital = async (req, res) => {
+//   try {
+//     const { hospitalId } = req.params;
+//     const hospitalData = req.body;
+//     const userId = req.user.id;
 
-    // Check if hospital exists and belongs to current user (or user is admin)
-    const [hospitals] = await pool.execute(
-      'SELECT user_id FROM hospitals WHERE id = ?',
-      [hospitalId]
-    );
+//     // Check if hospital exists and belongs to current user (or user is admin)
+//     const [hospitals] = await pool.execute(
+//       'SELECT user_id FROM hospitals WHERE id = ?',
+//       [hospitalId]
+//     );
 
-    if (hospitals.length === 0) {
-      return res.status(404).json({
-        success: false,
-        message: 'Hospital not found'
-      });
-    }
+//     if (hospitals.length === 0) {
+//       return res.status(404).json({
+//         success: false,
+//         message: 'Hospital not found'
+//       });
+//     }
 
-    if (hospitals[0].user_id !== userId && req.user.role !== 'admin') {
-      return res.status(403).json({
-        success: false,
-        message: 'Access denied'
-      });
-    }
+//     if (hospitals[0].user_id !== userId && req.user.role !== 'admin') {
+//       return res.status(403).json({
+//         success: false,
+//         message: 'Access denied'
+//       });
+//     }
 
-    // Check license number uniqueness if being updated
-    if (hospitalData.license_number) {
-      const [licenseCheck] = await pool.execute(
-        'SELECT id FROM hospitals WHERE license_number = ? AND id != ?',
-        [hospitalData.license_number, hospitalId]
-      );
+//     // Check license number uniqueness if being updated
+//     if (hospitalData.license_number) {
+//       const [licenseCheck] = await pool.execute(
+//         'SELECT id FROM hospitals WHERE license_number = ? AND id != ?',
+//         [hospitalData.license_number, hospitalId]
+//       );
 
-      if (licenseCheck.length > 0) {
-        return res.status(400).json({
-          success: false,
-          message: 'License number already exists'
-        });
-      }
-    }
+//       if (licenseCheck.length > 0) {
+//         return res.status(400).json({
+//           success: false,
+//           message: 'License number already exists'
+//         });
+//       }
+//     }
 
-    // Update hospital
-    const updateFields = [];
-    const updateValues = [];
+//     // Update hospital
+//     const updateFields = [];
+//     const updateValues = [];
 
-    Object.keys(hospitalData).forEach(key => {
-      if (hospitalData[key] !== undefined && hospitalData[key] !== null) {
-        updateFields.push(`${key} = ?`);
-        updateValues.push(hospitalData[key]);
-      }
-    });
+//     Object.keys(hospitalData).forEach(key => {
+//       if (hospitalData[key] !== undefined && hospitalData[key] !== null) {
+//         updateFields.push(`${key} = ?`);
+//         updateValues.push(hospitalData[key]);
+//       }
+//     });
 
-    if (updateFields.length === 0) {
-      return res.status(400).json({
-        success: false,
-        message: 'No fields to update'
-      });
-    }
+//     if (updateFields.length === 0) {
+//       return res.status(400).json({
+//         success: false,
+//         message: 'No fields to update'
+//       });
+//     }
 
-    updateValues.push(hospitalId);
+//     updateValues.push(hospitalId);
 
-    await pool.execute(
-      `UPDATE hospitals SET ${updateFields.join(', ')}, updated_at = CURRENT_TIMESTAMP WHERE id = ?`,
-      updateValues
-    );
+//     await pool.execute(
+//       `UPDATE hospitals SET ${updateFields.join(', ')}, updated_at = CURRENT_TIMESTAMP WHERE id = ?`,
+//       updateValues
+//     );
 
-    res.json({
-      success: true,
-      message: 'Hospital profile updated successfully'
-    });
-  } catch (error) {
-    console.error('Update hospital error:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Internal server error'
-    });
-  }
-};
+//     res.json({
+//       success: true,
+//       message: 'Hospital profile updated successfully'
+//     });
+//   } catch (error) {
+//     console.error('Update hospital error:', error);
+//     res.status(500).json({
+//       success: false,
+//       message: 'Internal server error'
+//     });
+//   }
+// };
 
 // Approve hospital
 const approveHospital = async (req, res) => {
@@ -278,70 +278,70 @@ const approveHospital = async (req, res) => {
 };
 
 // Delete hospital
-const deleteHospital = async (req, res) => {
-  try {
-    const { hospitalId } = req.params;
-    const userId = req.user.id;
+// const deleteHospital = async (req, res) => {
+//   try {
+//     const { hospitalId } = req.params;
+//     const userId = req.user.id;
 
-    // Check if hospital exists and belongs to current user (or user is admin)
-    const [hospitals] = await pool.execute(
-      'SELECT user_id FROM hospitals WHERE id = ?',
-      [hospitalId]
-    );
+//     // Check if hospital exists and belongs to current user (or user is admin)
+//     const [hospitals] = await pool.execute(
+//       'SELECT user_id FROM hospitals WHERE id = ?',
+//       [hospitalId]
+//     );
 
-    if (hospitals.length === 0) {
-      return res.status(404).json({
-        success: false,
-        message: 'Hospital not found'
-      });
-    }
+//     if (hospitals.length === 0) {
+//       return res.status(404).json({
+//         success: false,
+//         message: 'Hospital not found'
+//       });
+//     }
 
-    if (hospitals[0].user_id !== userId && req.user.role !== 'admin') {
-      return res.status(403).json({
-        success: false,
-        message: 'Access denied'
-      });
-    }
+//     if (hospitals[0].user_id !== userId && req.user.role !== 'admin') {
+//       return res.status(403).json({
+//         success: false,
+//         message: 'Access denied'
+//       });
+//     }
 
-    // Delete hospital (cascade will handle related records)
-    await pool.execute('DELETE FROM hospitals WHERE id = ?', [hospitalId]);
+//     // Delete hospital (cascade will handle related records)
+//     await pool.execute('DELETE FROM hospitals WHERE id = ?', [hospitalId]);
 
-    res.json({
-      success: true,
-      message: 'Hospital deleted successfully'
-    });
-  } catch (error) {
-    console.error('Delete hospital error:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Internal server error'
-    });
-  }
-};
+//     res.json({
+//       success: true,
+//       message: 'Hospital deleted successfully'
+//     });
+//   } catch (error) {
+//     console.error('Delete hospital error:', error);
+//     res.status(500).json({
+//       success: false,
+//       message: 'Internal server error'
+//     });
+//   }
+// };
 
 // Get pending hospitals (admin only)
-const getPendingHospitals = async (req, res) => {
-  try {
-    const [hospitals] = await pool.execute(`
-      SELECT h.*, u.email, u.created_at as user_created_at
-      FROM hospitals h
-      JOIN users u ON h.user_id = u.id
-      WHERE h.is_approved = false AND u.is_active = true
-      ORDER BY h.created_at ASC
-    `);
+// const getPendingHospitals = async (req, res) => {
+//   try {
+//     const [hospitals] = await pool.execute(`
+//       SELECT h.*, u.email, u.created_at as user_created_at
+//       FROM hospitals h
+//       JOIN users u ON h.user_id = u.id
+//       WHERE h.is_approved = false AND u.is_active = true
+//       ORDER BY h.created_at ASC
+//     `);
 
-    res.json({
-      success: true,
-      data: hospitals
-    });
-  } catch (error) {
-    console.error('Get pending hospitals error:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Internal server error'
-    });
-  }
-};
+//     res.json({
+//       success: true,
+//       data: hospitals
+//     });
+//   } catch (error) {
+//     console.error('Get pending hospitals error:', error);
+//     res.status(500).json({
+//       success: false,
+//       message: 'Internal server error'
+//     });
+//   }
+// };
 
 // Get hospital statistics
 const getHospitalStats = async (req, res) => {
@@ -415,9 +415,9 @@ module.exports = {
   getHospitalById,
   getHospitalProfile,
   createHospital,
-  updateHospital,
+  // updateHospital,
   approveHospital,
-  deleteHospital,
-  getPendingHospitals,
+  // deleteHospital,
+  // getPendingHospitals,
   getHospitalStats
 };

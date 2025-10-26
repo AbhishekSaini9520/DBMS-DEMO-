@@ -57,36 +57,36 @@ const getPatientById = async (req, res) => {
 };
 
 // Get current user's patient profile
-const getPatientProfile = async (req, res) => {
-  try {
-    const userId = req.user.id;
+// const getPatientProfile = async (req, res) => {
+//   try {
+//     const userId = req.user.id;
 
-    const [patients] = await pool.execute(`
-      SELECT p.*, u.email, u.created_at as user_created_at
-      FROM patients p
-      JOIN users u ON p.user_id = u.id
-      WHERE p.user_id = ?
-    `, [userId]);
+//     const [patients] = await pool.execute(`
+//       SELECT p.*, u.email, u.created_at as user_created_at
+//       FROM patients p
+//       JOIN users u ON p.user_id = u.id
+//       WHERE p.user_id = ?
+//     `, [userId]);
 
-    if (patients.length === 0) {
-      return res.status(404).json({
-        success: false,
-        message: 'Patient profile not found'
-      });
-    }
+//     if (patients.length === 0) {
+//       return res.status(404).json({
+//         success: false,
+//         message: 'Patient profile not found'
+//       });
+//     }
 
-    res.json({
-      success: true,
-      data: patients[0]
-    });
-  } catch (error) {
-    console.error('Get patient profile error:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Internal server error'
-    });
-  }
-};
+//     res.json({
+//       success: true,
+//       data: patients[0]
+//     });
+//   } catch (error) {
+//     console.error('Get patient profile error:', error);
+//     res.status(500).json({
+//       success: false,
+//       message: 'Internal server error'
+//     });
+//   }
+// };
 
 // Create patient profile
 const createPatient = async (req, res) => {
@@ -143,111 +143,111 @@ const createPatient = async (req, res) => {
 };
 
 // Update patient profile
-const updatePatient = async (req, res) => {
-  try {
-    const { patientId } = req.params;
-    const patientData = req.body;
-    const userId = req.user.id;
+// const updatePatient = async (req, res) => {
+//   try {
+//     const { patientId } = req.params;
+//     const patientData = req.body;
+//     const userId = req.user.id;
 
-    // Check if patient exists and belongs to current user (or user is admin)
-    const [patients] = await pool.execute(
-      'SELECT user_id FROM patients WHERE id = ?',
-      [patientId]
-    );
+//     // Check if patient exists and belongs to current user (or user is admin)
+//     const [patients] = await pool.execute(
+//       'SELECT user_id FROM patients WHERE id = ?',
+//       [patientId]
+//     );
 
-    if (patients.length === 0) {
-      return res.status(404).json({
-        success: false,
-        message: 'Patient not found'
-      });
-    }
+//     if (patients.length === 0) {
+//       return res.status(404).json({
+//         success: false,
+//         message: 'Patient not found'
+//       });
+//     }
 
-    if (patients[0].user_id !== userId && req.user.role !== 'admin') {
-      return res.status(403).json({
-        success: false,
-        message: 'Access denied'
-      });
-    }
+//     if (patients[0].user_id !== userId && req.user.role !== 'admin') {
+//       return res.status(403).json({
+//         success: false,
+//         message: 'Access denied'
+//       });
+//     }
 
-    // Update patient
-    const updateFields = [];
-    const updateValues = [];
+//     // Update patient
+//     const updateFields = [];
+//     const updateValues = [];
 
-    Object.keys(patientData).forEach(key => {
-      if (patientData[key] !== undefined && patientData[key] !== null) {
-        updateFields.push(`${key} = ?`);
-        updateValues.push(patientData[key]);
-      }
-    });
+//     Object.keys(patientData).forEach(key => {
+//       if (patientData[key] !== undefined && patientData[key] !== null) {
+//         updateFields.push(`${key} = ?`);
+//         updateValues.push(patientData[key]);
+//       }
+//     });
 
-    if (updateFields.length === 0) {
-      return res.status(400).json({
-        success: false,
-        message: 'No fields to update'
-      });
-    }
+//     if (updateFields.length === 0) {
+//       return res.status(400).json({
+//         success: false,
+//         message: 'No fields to update'
+//       });
+//     }
 
-    updateValues.push(patientId);
+//     updateValues.push(patientId);
 
-    await pool.execute(
-      `UPDATE patients SET ${updateFields.join(', ')}, updated_at = CURRENT_TIMESTAMP WHERE id = ?`,
-      updateValues
-    );
+//     await pool.execute(
+//       `UPDATE patients SET ${updateFields.join(', ')}, updated_at = CURRENT_TIMESTAMP WHERE id = ?`,
+//       updateValues
+//     );
 
-    res.json({
-      success: true,
-      message: 'Patient profile updated successfully'
-    });
-  } catch (error) {
-    console.error('Update patient error:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Internal server error'
-    });
-  }
-};
+//     res.json({
+//       success: true,
+//       message: 'Patient profile updated successfully'
+//     });
+//   } catch (error) {
+//     console.error('Update patient error:', error);
+//     res.status(500).json({
+//       success: false,
+//       message: 'Internal server error'
+//     });
+//   }
+// };
 
 // Delete patient
-const deletePatient = async (req, res) => {
-  try {
-    const { patientId } = req.params;
-    const userId = req.user.id;
+// const deletePatient = async (req, res) => {
+//   try {
+//     const { patientId } = req.params;
+//     const userId = req.user.id;
 
-    // Check if patient exists and belongs to current user (or user is admin)
-    const [patients] = await pool.execute(
-      'SELECT user_id FROM patients WHERE id = ?',
-      [patientId]
-    );
+//     // Check if patient exists and belongs to current user (or user is admin)
+//     const [patients] = await pool.execute(
+//       'SELECT user_id FROM patients WHERE id = ?',
+//       [patientId]
+//     );
 
-    if (patients.length === 0) {
-      return res.status(404).json({
-        success: false,
-        message: 'Patient not found'
-      });
-    }
+//     if (patients.length === 0) {
+//       return res.status(404).json({
+//         success: false,
+//         message: 'Patient not found'
+//       });
+//     }
 
-    if (patients[0].user_id !== userId && req.user.role !== 'admin') {
-      return res.status(403).json({
-        success: false,
-        message: 'Access denied'
-      });
-    }
+//     if (patients[0].user_id !== userId && req.user.role !== 'admin') {
+//       return res.status(403).json({
+//         success: false,
+//         message: 'Access denied'
+//       });
+//     }
 
-    // Delete patient (cascade will handle related records)
-    await pool.execute('DELETE FROM patients WHERE id = ?', [patientId]);
+//     // Delete patient (cascade will handle related records)
+//     await pool.execute('DELETE FROM patients WHERE id = ?', [patientId]);
 
-    res.json({
-      success: true,
-      message: 'Patient deleted successfully'
-    });
-  } catch (error) {
-    console.error('Delete patient error:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Internal server error'
-    });
-  }
-};
+//     res.json({
+//       success: true,
+//       message: 'Patient deleted successfully'
+//     });
+//   } catch (error) {
+//     console.error('Delete patient error:', error);
+//     res.status(500).json({
+//       success: false,
+//       message: 'Internal server error'
+//     });
+//   }
+// };
 
 // Get patient statistics
 const getPatientStats = async (req, res) => {
@@ -292,9 +292,9 @@ const getPatientStats = async (req, res) => {
 module.exports = {
   getAllPatients,
   getPatientById,
-  getPatientProfile,
+  // getPatientProfile,
   createPatient,
-  updatePatient,
-  deletePatient,
+  // updatePatient,
+  // deletePatient,
   getPatientStats
 };

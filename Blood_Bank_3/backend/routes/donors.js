@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const {getAllDonors,getDonorById, getDonorsByBloodGroup, getDonorProfile, createDonor, updateDonor, deleteDonor, getDonorStats} = require('../controllers/donorController');
+const {getAllDonors,getDonorById, getDonorsByBloodGroup, createDonor,getDonorStats} = require('../controllers/donorController');
 const {validateDonorRegistration} = require('../middleware/validation');
 const { authenticateToken} = require('../middleware/auth');
 

@@ -287,43 +287,43 @@ const getIssueStats = async (req, res) => {
 };
 
 // Get issues by date range
-const getIssuesByDateRange = async (req, res) => {
-  try {
-    const { startDate, endDate } = req.query;
+// const getIssuesByDateRange = async (req, res) => {
+//   try {
+//     const { startDate, endDate } = req.query;
 
-    if (!startDate || !endDate) {
-      return res.status(400).json({
-        success: false,
-        message: 'Start date and end date are required'
-      });
-    }
+//     if (!startDate || !endDate) {
+//       return res.status(400).json({
+//         success: false,
+//         message: 'Start date and end date are required'
+//       });
+//     }
 
-    const [issues] = await pool.execute(`
-      SELECT bi.*, 
-             br.patient_id,
-             p.first_name as patient_first_name, 
-             p.last_name as patient_last_name,
-             h.hospital_name
-      FROM blood_issues bi
-      JOIN blood_requests br ON bi.request_id = br.id
-      JOIN patients p ON br.patient_id = p.id
-      JOIN hospitals h ON bi.hospital_id = h.id
-      WHERE DATE(bi.issue_date) BETWEEN ? AND ?
-      ORDER BY bi.issue_date DESC
-    `, [startDate, endDate]);
+//     const [issues] = await pool.execute(`
+//       SELECT bi.*, 
+//              br.patient_id,
+//              p.first_name as patient_first_name, 
+//              p.last_name as patient_last_name,
+//              h.hospital_name
+//       FROM blood_issues bi
+//       JOIN blood_requests br ON bi.request_id = br.id
+//       JOIN patients p ON br.patient_id = p.id
+//       JOIN hospitals h ON bi.hospital_id = h.id
+//       WHERE DATE(bi.issue_date) BETWEEN ? AND ?
+//       ORDER BY bi.issue_date DESC
+//     `, [startDate, endDate]);
 
-    res.json({
-      success: true,
-      data: issues
-    });
-  } catch (error) {
-    console.error('Get issues by date range error:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Internal server error'
-    });
-  }
-};
+//     res.json({
+//       success: true,
+//       data: issues
+//     });
+//   } catch (error) {
+//     console.error('Get issues by date range error:', error);
+//     res.status(500).json({
+//       success: false,
+//       message: 'Internal server error'
+//     });
+//   }
+// };
 
 module.exports = {
   getAllIssues,
@@ -332,5 +332,5 @@ module.exports = {
   createIssue,
   getHospitalIssues,
   getIssueStats,
-  getIssuesByDateRange
+  // getIssuesByDateRange
 };
